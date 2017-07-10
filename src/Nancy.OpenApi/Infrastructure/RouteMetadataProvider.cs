@@ -11,6 +11,7 @@ namespace Nancy.OpenApi.Infrastructure
     /// </summary>
     public class RouteMetadataProvider : IRouteMetadataProvider
     {
+
         public RouteMetadataProvider(TinyIoCContainer container)
         {
             _container = container;
@@ -44,7 +45,7 @@ namespace Nancy.OpenApi.Infrastructure
             Type type;
             if (ModuleTypes.TryGetValue(metadataName, out type)) return type;
 
-            type = AppDomain.CurrentDomain.GetAssemblies()
+            type = AppDomain.CurrentDomain.GetAssemblies().Where(a => !Bootstrapper.DefaultAutoRegisterIgnoredAssemblies.Any(ia => ia(a)))
                             .SelectMany(x => x.GetTypes())
                             .FirstOrDefault(x => x.Name == metadataName);
 
